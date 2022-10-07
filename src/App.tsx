@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [pass, setPass] = useState("");
+  const [buttonContent, setButtonContent] = useState("Copy Password");
 
   const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -39,6 +40,20 @@ function App() {
   const updatePass = () => {
     const pass = getPassword();
     setPass(pass);
+    setButtonContent("Copy");
+  };
+
+  const handlePaste = () => {
+    navigator.clipboard.writeText(pass).then(
+      () => {
+        navigator.clipboard.readText().then((clipText) => {
+          setButtonContent("You got it");
+        });
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   };
 
   useEffect(() => {
@@ -55,6 +70,12 @@ function App() {
         Get a random password
       </button>
       <code>{pass}</code>
+      <button
+        onClick={handlePaste}
+        className="bg-green-300 px-4 py-2 font-bold rounded-lg"
+      >
+        {buttonContent}
+      </button>
     </div>
   );
 }
