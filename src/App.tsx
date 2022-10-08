@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 
 function App() {
   const [pass, setPass] = useState("");
   const [buttonContent, setButtonContent] = useState("Copy Password");
   const [passLength, setPassLength] = useState(8);
+  const [withSymbols, setWithSymbols] = useState(true);
 
   const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -14,25 +15,45 @@ function App() {
     const lower = "abcdedfghijklmnopqrstuvwxyz";
 
     let pass = "";
-    for (let i = 0; i < length; i++) {
-      const randomOfType = getRandomInt(4);
-      const randomOfSymbols = getRandomInt(symbols.length);
-      const randomOfNumbers = getRandomInt(10);
-      const randomOfUpper = getRandomInt(26);
-      const randomOfLower = getRandomInt(26);
-      switch (randomOfType) {
-        case 0:
-          pass += symbols[randomOfSymbols];
-          break;
-        case 1:
-          pass += numbers[randomOfNumbers];
-          break;
-        case 2:
-          pass += upper[randomOfUpper];
-          break;
-        case 3:
-          pass += lower[randomOfLower];
-          break;
+    if (withSymbols) {
+      for (let i = 0; i < length; i++) {
+        const randomOfType = getRandomInt(4);
+        const randomOfSymbols = getRandomInt(symbols.length);
+        const randomOfNumbers = getRandomInt(10);
+        const randomOfUpper = getRandomInt(26);
+        const randomOfLower = getRandomInt(26);
+        switch (randomOfType) {
+          case 0:
+            pass += symbols[randomOfSymbols];
+            break;
+          case 1:
+            pass += numbers[randomOfNumbers];
+            break;
+          case 2:
+            pass += upper[randomOfUpper];
+            break;
+          case 3:
+            pass += lower[randomOfLower];
+            break;
+        }
+      }
+    } else {
+      for (let i = 0; i < length; i++) {
+        const randomOfType = getRandomInt(3);
+        const randomOfNumbers = getRandomInt(10);
+        const randomOfUpper = getRandomInt(26);
+        const randomOfLower = getRandomInt(26);
+        switch (randomOfType) {
+          case 0:
+            pass += numbers[randomOfNumbers];
+            break;
+          case 1:
+            pass += upper[randomOfUpper];
+            break;
+          case 2:
+            pass += lower[randomOfLower];
+            break;
+        }
       }
     }
     return pass;
@@ -62,9 +83,14 @@ function App() {
     setPassLength(Number(tar.value));
   };
 
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const tar = e.target;
+    setWithSymbols((curr) => !curr);
+  };
+
   useEffect(() => {
     updatePass();
-  }, [passLength]);
+  }, [passLength, withSymbols]);
 
   return (
     <div className="App flex flex-col justify-center items-center gap-8 mt-10">
@@ -82,6 +108,17 @@ function App() {
       >
         {buttonContent}
       </button>
+      <div className="form-control">
+        <label className="label cursor-pointer">
+          <span className="label-text mr-2">With Symbols</span>
+          <input
+            type="checkbox"
+            onChange={(e) => handleCheckboxChange(e)}
+            defaultChecked={true}
+            className="checkbox"
+          />
+        </label>
+      </div>
       <input
         type="range"
         min="8"
