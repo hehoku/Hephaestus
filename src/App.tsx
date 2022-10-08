@@ -3,17 +3,18 @@ import { useEffect, useState } from "react";
 function App() {
   const [pass, setPass] = useState("");
   const [buttonContent, setButtonContent] = useState("Copy Password");
+  const [passLength, setPassLength] = useState(8);
 
   const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
-  const getPassword = () => {
+  const getPassword = (length: Number) => {
     const symbols = "!\"#$%&'()*+,-./:;<=>?@[]^_`{|}~";
     const numbers = "0123456789";
     const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const lower = "abcdedfghijklmnopqrstuvwxyz";
 
     let pass = "";
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < length; i++) {
       const randomOfType = getRandomInt(4);
       const randomOfSymbols = getRandomInt(symbols.length);
       const randomOfNumbers = getRandomInt(10);
@@ -38,7 +39,7 @@ function App() {
   };
 
   const updatePass = () => {
-    const pass = getPassword();
+    const pass = getPassword(passLength);
     setPass(pass);
     setButtonContent("Copy");
   };
@@ -56,9 +57,14 @@ function App() {
     );
   };
 
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tar = e.target;
+    setPassLength(Number(tar.value));
+  };
+
   useEffect(() => {
     updatePass();
-  }, []);
+  }, [passLength]);
 
   return (
     <div className="App flex flex-col justify-center items-center gap-8 mt-10">
@@ -76,6 +82,23 @@ function App() {
       >
         {buttonContent}
       </button>
+      <input
+        type="range"
+        min="8"
+        max="18"
+        defaultValue={passLength}
+        step="2"
+        onChange={(e) => handleSliderChange(e)}
+        className="range w-1/3"
+      />
+      <div className="w-1/3 flex justify-between text-xs px-2 -mt-4">
+        <span>8</span>
+        <span>10</span>
+        <span>12</span>
+        <span>14</span>
+        <span>16</span>
+        <span>18</span>
+      </div>
     </div>
   );
 }
